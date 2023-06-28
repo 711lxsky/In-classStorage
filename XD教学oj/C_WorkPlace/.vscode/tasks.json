@@ -1,0 +1,29 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {//这个大括号里是‘构建’任务
+            "label": "echo",//这个大括号里是‘构建’任务
+            "type": "shell",//任务类型，process是vsc把预定义变量和转义解析后直接全部传给command；shell相当于先打开shell再输入命令，所以args还会经过shell再解析一遍
+            "command": "gcc", //编译命令
+            "args": [ //传给gcc命令的一系列参数
+                "-g", //生成和调试有关的信息
+                "${file}", //指定要编译的是当前文件
+                "-o", //指定输出文件的路径和名称
+                "${fileBasenameNoExtension}.exe",//让可执行文件输出到源码文件所在的文件夹下的bin文件夹内，并且让它的名字和源码文件相同
+                "-fexec-charset=GBK"//解决中文乱码
+            ]
+        }
+    ],
+    "presentation": {//执行这个任务时的一些其他设定
+        "echo": true,//表示在执行任务时在终端要有输出
+        "reveal": "always",//执行任务时是否跳转到终端面板，可以为always，silent，never
+        "focus": false,//设为true后可以使执行task时焦点聚集在终端，但对编译来说，设为true没有意义，因为运行的时候才涉及到输入
+        "panel": "new", //每次执行这个task时都新建一个终端面板
+        "showReuseMessage": true,//控制是否显示“终端将被任务重用, 按任意键关闭”提示.
+        "clear": false
+    }
+}
+
+
