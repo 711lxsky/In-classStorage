@@ -6,6 +6,7 @@
 #include <cstdlib>
 
 int main() {
+    // 0读1写
     int pipefd1[2];  // 父写子读
     int pipefd2[2];  // 子写父读
     pid_t pid;
