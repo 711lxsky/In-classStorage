@@ -17,7 +17,7 @@ int main() {
 
     pid = fork();
     if (pid == -1) {
-        std::cerr << "Failed to fork\n";
+        std::cerr << "Failed to create Child\n";
         return 1;
     }
 
