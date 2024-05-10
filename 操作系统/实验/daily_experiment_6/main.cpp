@@ -1,9 +1,9 @@
 #include <iostream>
-#include <pthread.h>
-#include <semaphore.h>
+#include <pthread.h>  // 线程库
+#include <semaphore.h> // 信号量
 #include <vector>
 #include <unistd.h>
-#include <atomic>
+#include <atomic> // 原子操作， 类似Java里的线程安全类型变量
 
 // 全局设定
 const int BUFFER_SIZE = 10; // 缓冲区大小

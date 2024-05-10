@@ -6,7 +6,7 @@
 #include <cstring>
 
 // 定义共享内存的大小
-const int SHARED_MEMORY_CHUNK_SIZE = 4096;
+const int SHARED_MEMORY_CHUNK_SIZE = 1024;
 
 // 定义一个结构体来存放共享数据
 struct SharedData {
@@ -40,7 +40,7 @@ void writer() {
     SharedData* shared_data = static_cast<SharedData*>(shm_ptr);
 
     // 写入数据
-    strcpy(shared_data->text, "==== Hello, this is a message from the writer process! ====");
+    strcpy(shared_data->text, "==========! Hello, this is a message from the Parent Writer process! ======");
 
     // 将映射的共享内存从当前进程的地址空间中分离
     shmdt(shm_ptr);
