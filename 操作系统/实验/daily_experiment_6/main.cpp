@@ -1,107 +1,150 @@
 #include <iostream>
-#include <pthread.h> // POSIX 线程库
-#include <semaphore.h> // 信号量
+#include <pthread.h>
+#include <semaphore.h>
 #include <vector>
 #include <unistd.h>
+#include <atomic>
 
-// 定义缓冲区大小
-const int BUFFER_SIZE = 10;
+// 全局设定
+const int BUFFER_SIZE = 10; // 缓冲区大小
+const int MAX_PRODUCTS = 50; // 产品上限数量
+std::atomic<int> productsProduced(0); // 已生产的产品数量
+std::atomic<int> productsConsumed(0); // 已消费的产品数量
 
-// 产品数量
-const int PRODUCT_SIZE = 20;
+std::vector<int> buffer; // 缓冲区
+sem_t product, empty, mutex; // 信号量
 
-// 模拟缓冲区，用于存放“产品”
-std::vector<int> buffer;
+std::atomic<bool> stopRequested(false); // 停止标志
 
-// 信号量
-sem_t product;  // 已经生产的产品数量
-sem_t empty; // 缓冲区剩余空间数量
-sem_t mutex; // 互斥信号量，用于缓冲区的互斥访问
+// 生产者和消费者数量、耗时设置
+const int NUM_PRODUCERS = 2; // 生产者数量
+const int NUM_CONSUMERS = 3; // 消费者数量
+const int PRODUCER_SLEEP_TIME = 1; // 生产者耗时（秒）
+const int CONSUMER_SLEEP_TIME = 2; // 消费者耗时（秒）
 
 // 生产者函数
 void* producer(void* arg) {
-    for (int i = 0; i < PRODUCT_SIZE; ++i) {
+    int id = *(int*)arg;
+    while (!stopRequested && productsProduced < MAX_PRODUCTS) {
         // 检查缓冲区是否已满
         int cur_buffer_size;
         sem_getvalue(&empty, &cur_buffer_size);
         if (cur_buffer_size <= 0) {
-            std::cout << "++++ Buffer is full, Producer is waiting..." << std::endl;
+            std::cout << "++++! Buffer is full, Producer is waiting..." << std::endl;
         }
         // 阻塞等待缓冲区有空间
         // 尝试减少空间数量，如果空间数量小于0，则阻塞
         sem_wait(&empty);
-        // 进入临界区，获取互斥锁
         sem_wait(&mutex);
-        // 生产产品并放入缓冲区
-        buffer.push_back(i);
-        std::cout << "---- Producer produced: $" << i << std::endl;
-        // 离开临界区
+        if(stopRequested) break;
+        if (productsProduced < MAX_PRODUCTS) { // 在锁内部检查
+            int product = productsProduced.fetch_add(1) + 1;
+            buffer.push_back(product);
+            std::cout << "----! Producer " << id << " produced: " << product << std::endl << std::endl;
+        }
         sem_post(&mutex);
-        // 增加已生产产品的数量
-        // 缓冲区有新产品可用，唤醒等待的消费者
         sem_post(&product);
-        // 模拟生产耗时
-        sleep(0.5);
+        sleep(PRODUCER_SLEEP_TIME);  // 生产者耗时
+        // if (productsProduced >= MAX_PRODUCTS) {
+        //     // 如果所有产品都已生产，则释放所有阻塞的生产者
+        //     // for (int i = 0; i < NUM_PRODUCERS - 1; ++i) {
+        //     //     sem_post(&empty);
+        //     // }
+        //     break;
+        // }
     }
-    std::cout << "---- Producer finished producing all products." << std::endl;
+    // std::cout << "----! Producer " << id << " finished produce all products." << std::endl << std::endl;
     return nullptr;
+    
 }
 
 // 消费者函数
 void* consumer(void* arg) {
-    for (int i = 0; i < PRODUCT_SIZE; ++i) {
+    int id = *(int*)arg;
+    while (!stopRequested && productsConsumed < MAX_PRODUCTS) {
         // 检查缓冲区是否为空
         int cur_buffer_size;
         sem_getvalue(&empty, &cur_buffer_size);
         if(cur_buffer_size >= BUFFER_SIZE) {
-            std::cout << "++++ Buffer is empty, Consumer is waiting...\n" << std::endl;
+            std::cout << "++++! Buffer is empty, Consumer is waiting...\n" << std::endl;
         }
-        // 等待有产品可以消费
         sem_wait(&product);
-        // 进入临界区
         sem_wait(&mutex);
-        std::cout << "\n#### Before consumption, buffer contents: ";
-        for (const auto& product : buffer) {
-            std::cout << product << " ";
+        if (stopRequested) break;
+        if (!buffer.empty()) {
+            std::cout << "####! Before consumption, buffer contents: ";
+            for (const auto& product : buffer) {
+                std::cout << product << " ";
+            }
+            std::cout << std::endl;
+
+            int product = buffer.back();
+            buffer.pop_back();
+            productsConsumed.fetch_add(1);
+            std::cout << "====! Consumer " << id << " consumed: " << product << std::endl;
+
+            std::cout << "####! After consumption, buffer contents: ";
+            for (const auto& product : buffer) {
+                std::cout << product << " ";
+            }
+            std::cout << std::endl << std::endl;
         }
-        std::cout << std::endl;
-        // 从缓冲区取出产品消费
-        int product = buffer.back();
-        buffer.pop_back();
-        std::cout << "==== consumer consumed: $" << product << std::endl;
-        std::cout << "#### After consumption, buffer contents: ";
-        for (const auto& product : buffer) {
-            std::cout << product << " ";
-        }
-        std::cout << std::endl << std::endl;
-        // 离开临界区
         sem_post(&mutex);
-        // 增加缓冲区空间数量
         sem_post(&empty);
-        // 模拟消费耗时
-        sleep(1);
+        sleep(CONSUMER_SLEEP_TIME); // 消费者耗时
+        // if (productsConsumed >= MAX_PRODUCTS) {
+        //     // 如果所有产品都已消费，则释放所有阻塞的消费者
+        //     // for (int i = 0; i < NUM_CONSUMERS - 1; ++i) {
+        //     //     sem_post(&product);
+        //     // }
+        //     break;
+        // }
     }
-    std::cout << "==== Consumer finished consuming all products." << std::endl;
+    // std::cout << "====! Consumer " << id << " finished consuming all products." << std::endl << std::endl;    
+    return nullptr;
+}
+
+// 监听器函数
+void* stopListener(void*) {
+    std::cin.get();
+    stopRequested = true;
+    // 中断可能因等待资源而阻塞的生产者和消费者
+    for (int i = 0; i < BUFFER_SIZE; ++i) {
+        sem_post(&product);
+        sem_post(&empty);
+    }
     return nullptr;
 }
 
 int main() {
-    // 初始化信号量, 第二个参数表示互斥量非命名，只能在当前进程使用
     sem_init(&product, 0, 0);
     sem_init(&empty, 0, BUFFER_SIZE);
-    // 初始值为1, 表示只允许有一个线程持有该锁，此处是一个线程访问缓冲区
     sem_init(&mutex, 0, 1);
 
-    // 创建生产者和消费者线程
-    pthread_t prod, cons;
-    pthread_create(&cons, nullptr, consumer, nullptr);
-    pthread_create(&prod, nullptr, producer, nullptr);
+    // 打印生产者、消费者数量和耗时
+    std::cout << "生产者数量: " << NUM_PRODUCERS << ", 消费者数量: " << NUM_CONSUMERS << std::endl;
+    std::cout << "生产者耗时: " << PRODUCER_SLEEP_TIME << "秒, 消费者耗时: " << CONSUMER_SLEEP_TIME << "秒" << std::endl;
 
-    // 等待线程结束
-    pthread_join(prod, nullptr);
-    pthread_join(cons, nullptr);
+    pthread_t producers[NUM_PRODUCERS], consumers[NUM_CONSUMERS], stopThread;
+    int ids[NUM_PRODUCERS + NUM_CONSUMERS];
 
-    // 销毁信号量
+    for (int i = 0; i < NUM_PRODUCERS; ++i) {
+        ids[i] = i + 1;
+        pthread_create(&producers[i], nullptr, producer, &ids[i]);
+    }
+    for (int i = 0; i < NUM_CONSUMERS; ++i) {
+        ids[NUM_PRODUCERS + i] = i + 1;
+        pthread_create(&consumers[i], nullptr, consumer, &ids[i]);
+    }
+    pthread_create(&stopThread, nullptr, stopListener, nullptr);
+    for (int i = 0; i < NUM_PRODUCERS; ++i) {
+        pthread_join(producers[i], nullptr);
+    }
+    for (int i = 0; i < NUM_CONSUMERS; ++i) {
+        pthread_join(consumers[i], nullptr);
+    }
+    pthread_join(stopThread, nullptr);
+
     sem_destroy(&product);
     sem_destroy(&empty);
     sem_destroy(&mutex);
