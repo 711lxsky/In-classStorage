@@ -1,59 +1,75 @@
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include <iostream>
-#include <sys/stat.h> // 文件状态信息访问
-#include <sys/types.h> 
-#include <fcntl.h> // 文件控制选项
-#include <unistd.h> 
-#include <cstring>
-#include <cstdlib>
-#include <sys/wait.h> // 进程等待
+#include <string>
 
 int main() {
-    const char* fifoPath = "/tmp/myfifo"; // 进程间通信管道文件
-    const char* message = "----- Hello, this is a message from child! -----";
-    char readbuffer[100];
-    int fd; // 存放打开FIFO文件时返回的文件描述符
-
     // 创建命名管道
-    // 0666:权限模式，所有用户都有读写权限
-    if (mkfifo(fifoPath, 0666) == -1) {
-        perror("create fifo error");
-        exit(EXIT_FAILURE);
+    const char* fifo_name = "/tmp/myfifo";
+    mkfifo(fifo_name, 0666);
+
+    pid_t pid = fork(); // 创建子进程
+    if (pid < 0) {
+        std::cerr << "Fork failed" << std::endl;
+        return 1;
     }
 
-    pid_t pid = fork();
-    if (pid == -1) {
-        perror("create child process error");
-        exit(EXIT_FAILURE);
-    }
-
-    if (pid == 0) {
-        // 子进程: 向 FIFO 写数据
-        // O_WRONLY: 只写方式打开
-        fd = open(fifoPath, O_WRONLY);
-        if (fd == -1) {
-            perror("open fifo error");
-            exit(EXIT_FAILURE);
+    if (pid == 0) { // 子进程
+        // 打开命名管道用于写入
+        int fd = open(fifo_name, O_WRONLY);
+        if (fd < 0) {
+            std::cerr << "Child: Open failed" << std::endl;
+            return 1;
         }
-        write(fd, message, strlen(message) + 1); // 写入
-        close(fd);
-        exit(EXIT_SUCCESS);
-    } else {
-        // 父进程: 从 FIFO 读数据
-        // O_RDONLY: 只读方式打开
-        fd = open(fifoPath, O_RDONLY);
-        if (fd == -1) {
-            perror("open fifo error");
-            exit(EXIT_FAILURE);
+
+        // 从用户获取输入并写入命名管道
+        std::string message;
+        bool flag = true;
+        while (true) {
+            if(flag){
+                std::cout << "\nChild: Enter message to send (type 'end' to quit): ";
+                flag = false;
+            }
+            std::getline(std::cin, message);
+            if (message == "end") {
+                break; // 用户输入 "end" 时退出循环
+            }
+            // 写入数据到命名管道
+            write(fd, message.c_str(), message.length() + 1); // +1 是为了写入字符串结束符 '\0'
         }
-        read(fd, readbuffer, sizeof(readbuffer)); // 读取
-        std::cout << "Parent received: " << readbuffer << std::endl;
+
+        // 关闭文件描述符
         close(fd);
+    } else { // 父进程
+        // 打开命名管道用于读取
+        int fd = open(fifo_name, O_RDONLY);
+        if (fd < 0) {
+            std::cerr << "Parent: Open failed" << std::endl;
+            return 1;
+        }
 
-        // 等待子进程结束
-        wait(NULL);
+        // 循环读取数据
+        char buffer[256];
+        while (true) {
+            std::cout << "Parent: Waiting for data..." << std::endl;
+            ssize_t bytes_read = read(fd, buffer, sizeof(buffer));
+            if (bytes_read > 0) {
+                buffer[bytes_read] = '\0'; // 确保字符串以 null 结尾
+                std::cout << "Parent: Received message: " << buffer << std::endl << std::endl;
+            } else if (bytes_read == 0) {
+                std::cout << "Parent: End of file reached, exiting." << std::endl;
+                break; // EOF reached, exit the loop
+            } else {
+                std::cerr << "Read failed" << std::endl;
+                break; // Read error, exit the loop
+            }
+        }
 
-        // 删除 FIFO 文件
-        unlink(fifoPath);
+        // 关闭文件描述符并删除命名管道
+        close(fd);
+        unlink(fifo_name);
     }
 
     return 0;

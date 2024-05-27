@@ -5,7 +5,7 @@
 
 // 定义全局变量
 int sharedData = 711;
-const int threadNum = 20;
+const int threadNum = 10;
 
 // 互斥锁，用于线程间的同步
 std::mutex mtx;

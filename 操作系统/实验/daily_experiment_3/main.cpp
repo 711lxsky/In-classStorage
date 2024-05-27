@@ -1,5 +1,5 @@
 /* 
-    注意当前程序命令行运行编译后文件，在vscode中直接运行被拦截，
+    当前程序命令行运行编译后文件，在vscode中直接运行被拦截，
     有异常User defined signal 1
 */
 
@@ -34,7 +34,7 @@ int main() {
             std::cout << "==== Child 2 process started, PID: " << getpid() << std::endl << std::endl;
             sleep(1); // 确保第一个子进程已经设置好信号处理函数
             std::cout << "==== Child 2 process sending signal to Chiled 1 process" << std::endl << std::endl; // 兄弟通信
-            kill(pid1, SIGUSR1);
+            kill(pid1, SIGUSR1); // 兄弟
             sleep(3); // 延时，确保第一个子进程已经向父进程发送了信号
             std::cout << "==== Child 2 process sending signal to parent process" << std::endl << std::endl;
             kill(getppid(), SIGUSR2); // 父子通信

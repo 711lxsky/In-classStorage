@@ -45,15 +45,7 @@ void* producer(void* arg) {
         sem_post(&mutex);
         sem_post(&product);
         sleep(PRODUCER_SLEEP_TIME);  // 生产者耗时
-        // if (productsProduced >= MAX_PRODUCTS) {
-        //     // 如果所有产品都已生产，则释放所有阻塞的生产者
-        //     // for (int i = 0; i < NUM_PRODUCERS - 1; ++i) {
-        //     //     sem_post(&empty);
-        //     // }
-        //     break;
-        // }
     }
-    // std::cout << "----! Producer " << id << " finished produce all products." << std::endl << std::endl;
     return nullptr;
     
 }
@@ -92,15 +84,7 @@ void* consumer(void* arg) {
         sem_post(&mutex);
         sem_post(&empty);
         sleep(CONSUMER_SLEEP_TIME); // 消费者耗时
-        // if (productsConsumed >= MAX_PRODUCTS) {
-        //     // 如果所有产品都已消费，则释放所有阻塞的消费者
-        //     // for (int i = 0; i < NUM_CONSUMERS - 1; ++i) {
-        //     //     sem_post(&product);
-        //     // }
-        //     break;
-        // }
     }
-    // std::cout << "====! Consumer " << id << " finished consuming all products." << std::endl << std::endl;    
     return nullptr;
 }
 
