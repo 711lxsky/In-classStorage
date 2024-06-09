@@ -46,7 +46,7 @@ public class DateOperator {
     /* 给定年份，判断是否为闰年*/
     public boolean judLeapYear(){
         // bug修复 https://github.com/711lxsky/In-classStorage/issues/1
-        return (this.year % 4 == 0 && this.year % 100 != 0) || this.year /% 400 == 0;
+        return (this.year % 4 == 0 && this.year % 100 != 0) || this.year % 400 == 0;
     }
 
     /* 根据月份，返回该月天数*/
