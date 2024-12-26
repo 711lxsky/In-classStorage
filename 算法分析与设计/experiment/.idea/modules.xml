@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/experiment.iml" filepath="$PROJECT_DIR$/.idea/experiment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/first_experiment/first_experiment.iml" filepath="$PROJECT_DIR$/first_experiment/first_experiment.iml" />
+      <module fileurl="file://$PROJECT_DIR$/four/four.iml" filepath="$PROJECT_DIR$/four/four.iml" />
+      <module fileurl="file://$PROJECT_DIR$/second/second.iml" filepath="$PROJECT_DIR$/second/second.iml" />
+      <module fileurl="file://$PROJECT_DIR$/third/third.iml" filepath="$PROJECT_DIR$/third/third.iml" />
+    </modules>
+  </component>
+</project>

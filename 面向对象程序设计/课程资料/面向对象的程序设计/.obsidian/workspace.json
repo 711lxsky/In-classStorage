@@ -1,0 +1,185 @@
+{
+  "main": {
+    "id": "ac3a067710ae6523",
+    "type": "split",
+    "children": [
+      {
+        "id": "6988789803c754dd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "41db1df41a465e97",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "1_C++核心编程.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "1_C++核心编程"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "1dc663bee11c951b",
+    "type": "split",
+    "children": [
+      {
+        "id": "9d7c97a02d6ef116",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5dee07b277259136",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-folder-closed",
+              "title": "文件列表"
+            }
+          },
+          {
+            "id": "a28cfa758409c805",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "搜索"
+            }
+          },
+          {
+            "id": "c6332436b043bd82",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "书签"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "043c2e894df5a13a",
+    "type": "split",
+    "children": [
+      {
+        "id": "6f7c5d53cdc13012",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bafe8070b9ceffa6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "1_C++核心编程.pdf",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "1_C++核心编程 的反向链接列表"
+            }
+          },
+          {
+            "id": "3ea920d678b8cb7f",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "1_C++核心编程.pdf",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "1_C++核心编程 的出链列表"
+            }
+          },
+          {
+            "id": "7cf36231bf712842",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              },
+              "icon": "lucide-tags",
+              "title": "标签"
+            }
+          },
+          {
+            "id": "eb423cbea80c434c",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "1_C++核心编程.pdf"
+              },
+              "icon": "lucide-list",
+              "title": "1_C++核心编程 的大纲"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:打开快速切换": false,
+      "graph:查看关系图谱": false,
+      "canvas:新建白板": false,
+      "daily-notes:打开/创建今天的日记": false,
+      "templates:插入模板": false,
+      "command-palette:打开命令面板": false
+    }
+  },
+  "active": "41db1df41a465e97",
+  "lastOpenFiles": [
+    "具体资料/派生类.md",
+    "具体资料/Class(类) Part 2.md",
+    "具体资料/Class(类) part 1.md",
+    "大纲目录.md",
+    "具体资料/操作符重载 part 2.md",
+    "具体资料/操作符重载 part 1.md",
+    "具体资料/表达式和语句.md",
+    "具体资料/函数.md",
+    "具体资料/常量和引用及结构体.md",
+    "具体资料/基本类型和声明.md",
+    "具体资料/类层次结构.md",
+    "具体资料/异常处理.md",
+    "具体资料/源码文件和程序.md",
+    "具体资料/指针和数组.md",
+    "具体资料/STL.md",
+    "具体资料/Namespace和异常简介.md",
+    "具体资料/C++简介.md",
+    "1_C++核心编程.pdf",
+    "具体资料/模板.md",
+    "c++复习纲要.pdf"
+  ]
+}

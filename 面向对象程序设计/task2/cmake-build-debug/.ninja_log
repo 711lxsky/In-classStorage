@@ -1,0 +1,8 @@
+# ninja log v6
+4	519	7516346755622686	CMakeFiles/task2.dir/People.cpp.obj	c7426b7f0e1cda68
+1	481	7516350558823237	CMakeFiles/task2.dir/Dog.cpp.obj	579b4e18b433fac
+484	728	7516350563653966	task2.exe	cee9a84cb4d912a2
+4	490	7516343353660330	CMakeFiles/task2.dir/SavingAccount.cpp.obj	c51a29a2adf10cb8
+2	485	7516349259660217	CMakeFiles/task2.dir/Student.cpp.obj	65d326cd540afe84
+2	512	7516352067300816	CMakeFiles/task2.dir/SavingAccount.cpp.obj	c51a29a2adf10cb8
+516	774	7516352072433821	task2.exe	233787111bc1f9ba
