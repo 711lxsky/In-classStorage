@@ -1,0 +1,216 @@
+-- 创建数据库
+CREATE DATABASE IF NOT EXISTS SchoolManagement;
+USE SchoolManagement;
+
+-- 学校表 (School)
+-- 存储学校的名称
+CREATE TABLE IF NOT EXISTS School (
+    school_id INT AUTO_INCREMENT PRIMARY KEY, -- 学校ID，自增主键
+    name VARCHAR(255) NOT NULL UNIQUE -- 学校名称，唯一且不能为空
+);
+
+-- 专业表 (Major)
+-- 存储专业的名称及其所属学校
+CREATE TABLE IF NOT EXISTS Major (
+    major_id INT AUTO_INCREMENT PRIMARY KEY, -- 专业ID，自增主键
+    name VARCHAR(255) NOT NULL, -- 专业名称，不能为空
+    school_id INT, -- 所属学校ID
+    FOREIGN KEY (school_id) REFERENCES School(school_id) -- 外键，引用学校表的school_id
+);
+
+-- 班级表 (Class)
+-- 存储班级的名称、入学年份及其所属专业
+CREATE TABLE IF NOT EXISTS Class (
+    class_id INT AUTO_INCREMENT PRIMARY KEY, -- 班级ID，自增主键
+    name VARCHAR(255) NOT NULL, -- 班级名称，不能为空
+    year INT NOT NULL, -- 入学年份，不能为空
+    major_id INT, -- 所属专业ID
+    FOREIGN KEY (major_id) REFERENCES Major(major_id) -- 外键，引用专业表的major_id
+);
+
+-- 学生表 (Student)
+-- 存储学生的个人信息及其所在班级
+CREATE TABLE IF NOT EXISTS Student (
+    student_id INT AUTO_INCREMENT PRIMARY KEY, -- 学生ID，自增主键
+    name VARCHAR(255) NOT NULL, -- 学生姓名，不能为空
+    gender ENUM('M', 'F') NOT NULL, -- 性别，只能为“男”或“女”
+    dob DATE NOT NULL, -- 出生年月，不能为空
+    class_id INT, -- 所在班级ID
+    FOREIGN KEY (class_id) REFERENCES Class(class_id) -- 外键，引用班级表的class_id
+);
+
+-- 课程表 (Course)
+-- 存储课程的名称和学分
+CREATE TABLE IF NOT EXISTS Course (
+    course_id INT AUTO_INCREMENT PRIMARY KEY, -- 课程ID，自增主键
+    name VARCHAR(255) NOT NULL, -- 课程名称，不能为空
+    credit INT NOT NULL -- 学分，不能为空
+);
+
+-- 教师表 (Teacher)
+-- 存储教师的姓名和职称
+CREATE TABLE IF NOT EXISTS Teacher (
+    teacher_id INT AUTO_INCREMENT PRIMARY KEY, -- 教师ID，自增主键
+    name VARCHAR(255) NOT NULL, -- 教师姓名，不能为空
+    title VARCHAR(255) -- 职称
+);
+
+-- 课程-专业关联表 (CourseMajorRelation)
+-- 存储课程与专业的关联关系，包括是否必修和授课学期
+CREATE TABLE IF NOT EXISTS CourseMajorRelation (
+    relation_id INT AUTO_INCREMENT PRIMARY KEY, -- 关联ID，自增主键
+    course_id INT, -- 课程ID
+    major_id INT, -- 专业ID
+    is_required BOOLEAN NOT NULL, -- 是否必修
+    semester INT NOT NULL, -- 授课学期
+    FOREIGN KEY (course_id) REFERENCES Course(course_id), -- 外键，引用课程表的course_id
+    FOREIGN KEY (major_id) REFERENCES Major(major_id) -- 外键，引用专业表的major_id
+);
+
+-- 授课表 (Teaching)
+-- 存储教师授课的信息，包括教师、班级和课程
+CREATE TABLE IF NOT EXISTS Teaching (
+    teaching_id INT AUTO_INCREMENT PRIMARY KEY, -- 授课ID，自增主键
+    teacher_id INT, -- 教师ID
+    class_id INT, -- 班级ID
+    course_id INT, -- 课程ID
+    FOREIGN KEY (teacher_id) REFERENCES Teacher(teacher_id), -- 外键，引用教师表的teacher_id
+    FOREIGN KEY (class_id) REFERENCES Class(class_id), -- 外键，引用班级表的class_id
+    FOREIGN KEY (course_id) REFERENCES Course(course_id), -- 外键，引用课程表的course_id
+    UNIQUE (teacher_id, class_id) -- 一个教师在一个班只能教一门课
+);
+
+-- 成绩表 (Grade)
+-- 存储学生的课程成绩，包括原始成绩和补考成绩
+CREATE TABLE IF NOT EXISTS Grade (
+    grade_id INT AUTO_INCREMENT PRIMARY KEY, -- 成绩ID
+
+INSERT INTO School (name) VALUES ('信息工程学院'), ('人文学院'), ('理学院');
+
+INSERT INTO Major (name, school_id) VALUES
+('计算机科学', 1), ('软件工程', 1), ('电子信息工程', 1),
+('汉语言文学', 2), ('历史学', 2),
+('数学与应用数学', 3), ('物理学', 3);
+
+INSERT INTO Class (name, year, major_id) VALUES
+('计算机科学1班', 2020, 1), ('计算机科学2班', 2020, 1),
+('软件工程1班', 2020, 2), ('软件工程2班', 2020, 2),
+('电子信息工程1班', 2020, 3), ('电子信息工程2班', 2020, 3),
+('汉语言文学1班', 2020, 4), ('汉语言文学2班', 2020, 4),
+('历史学1班', 2020, 5), ('历史学2班', 2020, 5),
+('数学与应用数学1班', 2020, 6), ('数学与应用数学2班', 2020, 6),
+('物理学1班', 2020, 7), ('物理学2班', 2020, 7);
+
+INSERT INTO Student (name, gender, dob, class_id) VALUES
+('张三', 'M', '2000-01-01', 1), ('李四', 'F', '2000-02-01', 1),
+('王五', 'M', '2000-03-01', 2), ('赵六', 'F', '2000-04-01', 2),
+('孙七', 'M', '2000-05-01', 3), ('周八', 'F', '2000-06-01', 3),
+('吴九', 'M', '2000-07-01', 4), ('郑十', 'F', '2000-08-01', 4),
+('钱十一', 'M', '2000-09-01', 5), ('陈十二', 'F', '2000-10-01', 5);
+
+INSERT INTO Course (name, credit) VALUES
+('数据库原理', 4), ('操作系统', 4), ('数据结构', 4),
+('古代汉语', 3), ('现代汉语', 3),
+('高等数学', 4), ('线性代数', 3);
+
+INSERT INTO Teacher (name, title) VALUES
+('王老师', '教授'), ('李老师', '副教授'), ('张老师', '讲师'),
+('刘老师', '教授'), ('陈老师', '副教授'), ('杨老师', '讲师');
+
+INSERT INTO CourseMajorRelation (course_id, major_id, is_required, semester) VALUES
+(1, 1, TRUE, 5), (2, 1, TRUE, 5), (3, 1, TRUE, 5),
+(4, 4, TRUE, 5), (5, 4, TRUE, 5),
+(6, 6, TRUE, 5), (7, 6, TRUE, 5);
+
+INSERT INTO Teaching (teacher_id, class_id, course_id) VALUES
+(1, 1, 1), (2, 1, 2), (3, 1, 3),
+(4, 4, 4), (5, 4, 5),
+(6, 6, 6), (1, 6, 7);
+
+INSERT INTO Grade (student_id, course_id, score, retake_score) VALUES
+(1, 1, 85, NULL), (1, 2, 90, NULL), (1, 3, 88, NULL),
+(2, 1, 75, NULL), (2, 2, 80, NULL), (2, 3, 78, NULL),
+(3, 1, 92, NULL), (3, 2, 88, NULL), (3, 3, 90, NULL),
+(4, 4, 85, NULL), (4, 5, 88, NULL),
+(5, 6, 90, NULL), (5, 7, 85, NULL),
+(6, 6, 75, NULL), (6, 7, 78, NULL),
+(7, 1, 80, NULL), (7, 2, 85, NULL), (7, 3, 88, NULL),
+(8, 4, 82, NULL), (8, 5, 80, NULL),
+(9, 6, 85, NULL), (9, 7, 88, NULL),
+(10, 6, 75, NULL), (10, 7, 78, NULL);
+
+# 按学号查询学生基本信息
+SELECT s.student_id, s.name, s.gender, s.dob, c.name AS class_name, m.name AS major_name
+FROM Student s
+JOIN Class c ON s.class_id = c.class_id
+JOIN Major m ON c.major_id = m.major_id
+WHERE s.student_id = 3;
+
+# 按姓名查询学生基本信息
+SELECT s.student_id, s.name, s.gender, s.dob, c.name AS class_name, m.name AS major_name
+FROM Student s
+JOIN Class c ON s.class_id = c.class_id
+JOIN Major m ON c.major_id = m.major_id
+WHERE s.name = '张三';
+
+# 按专业查询学生基本信息
+SELECT s.student_id, s.name, s.gender, s.dob, c.name AS class_name
+FROM Student s
+JOIN Class c ON s.class_id = c.class_id
+WHERE c.major_id = (SELECT major_id FROM Major WHERE name = '计算机科学');
+
+INSERT INTO Grade (student_id, course_id, score)
+VALUES (1, 1, 85);
+
+-- 查询学生所修的课程、性质、学期、学分及成绩
+SELECT
+    g.student_id,
+    c.name AS course_name,
+    cmr.is_required AS is_required,
+    cmr.semester AS semester,
+    c.credit AS credit,
+    g.score AS score
+FROM Grade g
+JOIN Course c ON g.course_id = c.course_id
+JOIN CourseMajorRelation cmr ON c.course_id = cmr.course_id
+WHERE g.student_id = 1;
+
+-- 查询必修课平均成绩
+SELECT
+    AVG(g.score * c.credit) / SUM(c.credit) AS required_avg_score
+FROM Grade g
+JOIN Course c ON g.course_id = c.course_id
+JOIN CourseMajorRelation cmr ON c.course_id = cmr.course_id
+WHERE g.student_id = 1 AND cmr.is_required = TRUE;
+
+-- 查询所有课程平均成绩（按学分加权）
+SELECT
+    AVG(g.score * c.credit) / SUM(c.credit) AS overall_avg_score
+FROM Grade g
+JOIN Course c ON g.course_id = c.course_id
+WHERE g.student_id = 1;
+
+# 查询一位学生被哪些教师教过课
+SELECT DISTINCT t.name AS teacher_name
+FROM Teaching te
+         JOIN Teacher t ON te.teacher_id = t.teacher_id
+         JOIN Grade g ON te.class_id = (SELECT class_id FROM Student WHERE student_id = 1) AND te.course_id = g.course_id
+WHERE g.student_id = 1;
+
+# 查询快要被开除的学生（距被开除差3学分之内）
+SELECT s.student_id, s.name, s.gender, s.dob, c.name AS class_name, m.name AS major_name,
+       total_required_fail_credit, total_elective_fail_credit
+FROM Student s
+JOIN Class c ON s.class_id = c.class_id
+JOIN Major m ON c.major_id = m.major_id
+JOIN (
+    SELECT g.student_id,
+           SUM(CASE WHEN cmr.is_required = TRUE THEN c.credit ELSE 0 END) AS total_required_fail_credit,
+           SUM(CASE WHEN cmr.is_required = FALSE THEN c.credit ELSE 0 END) AS total_elective_fail_credit
+    FROM Grade g
+    JOIN Course c ON g.course_id = c.course_id
+    JOIN CourseMajorRelation cmr ON c.course_id = cmr.course_id
+    WHERE g.score < 60
+    GROUP BY g.student_id
+) AS fail_credits ON s.student_id = fail_credits.student_id
+WHERE (total_required_fail_credit BETWEEN 7 AND 10) OR (total_elective_fail_credit BETWEEN 12 AND 15);

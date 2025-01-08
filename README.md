@@ -36,7 +36,6 @@
 - [形势与政策](https://github.com/711lxsky/In-classStorage/tree/main/%E5%BD%A2%E5%8A%BF%E4%B8%8E%E6%94%BF%E7%AD%96)
 - [形势与政策II笔记(大二上)](https://github.com/711lxsky/In-classStorage/tree/main/%E5%BD%A2%E5%8A%BF%E4%B8%8E%E6%94%BF%E7%AD%96II%E7%AC%94%E8%AE%B0(%E5%A4%A7%E4%BA%8C%E4%B8%8A))
 - [形势与政策大二下](https://github.com/711lxsky/In-classStorage/tree/main/%E5%BD%A2%E5%8A%BF%E4%B8%8E%E6%94%BF%E7%AD%96%E5%A4%A7%E4%BA%8C%E4%B8%8B)
-- [微机实验](https://github.com/711lxsky/In-classStorage/tree/main/%E5%BE%AE%E6%9C%BA%E5%AE%9E%E9%AA%8C)
 - [操作系统](https://github.com/711lxsky/In-classStorage/tree/main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F)
 - [操作系统课设](https://github.com/711lxsky/In-classStorage/tree/main/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%AF%BE%E8%AE%BE)
 - [模电](https://github.com/711lxsky/In-classStorage/tree/main/%E6%A8%A1%E7%94%B5)

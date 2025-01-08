@@ -1,0 +1,83 @@
+IO244		equ	230h		;244
+IO273		equ	230h		;273
+
+_stack segment	stack
+	       dw 100 DUP(?)
+_stack		ends
+
+_data segment	word public 'DATA'
+_data		ends
+
+code segment
+main proc
+	        assume cs:code,ds:_data,ss:_stack
+			; 初始化寄存器
+	        mov    ax,_data
+	        mov    ds,ax
+	        mov    bx,0fefeh
+	start:  mov    dx,IO244 ; 读取244引脚的输入值
+	        in     al,dx
+	        mov    ah,al
+	        cmp    al,0ffh ; 判断输入值是否为0xff，如果不是，则进行翻转操作       
+	        jnz    Next0
+	        call   ROLeft ; 调用ROLeft函数进行左移操作
+	        jmp    Next2
+	Next0:  cmp    al,0 ; 判断输入值是否为0，如果不是，跳转Next1         
+	        jnz    Next1
+	        call   RORight 
+	        jmp    Next2
+	Next1:  call   Light
+	Next2:  call   Delay
+	        jmp    start
+main endp
+
+ROLeft proc	near
+			; 左移bl寄存器，并将结果存储在al寄存器中
+	        rol    bl,1
+	        mov    al,bl
+			; 输出左移后的值到273引脚
+	        mov    dx,IO273
+	        out    dx,ax
+	        ret
+ROLeft endp
+
+RORight proc near
+			; 右移bl寄存器，并将结果存储在al寄存器中
+	        ror    bl,1
+	        mov    al,bl
+	        mov    dx,IO273
+	        out    dx,ax
+	        ret
+RORight endp
+
+Light proc near
+			xor    bh,1  ;bx高八位与1异或
+	        mov    al,bh
+	        mov    dx,IO273
+	        out    dx,ax
+			call   Delay
+			xor    bh,8 
+	        mov    al,bh
+	        mov    dx,IO273
+	        out    dx,ax
+			call   Delay
+			xor    bh,2 
+	        mov    al,bh
+	        mov    dx,IO273
+	        out    dx,ax
+			call   Delay
+			xor    bh,4 
+	        mov    al,bh
+	        mov    dx,IO273
+	        out    dx,ax
+			call   Delay
+	        ret
+Light endp
+
+Delay proc near                 
+	        xor    cx,cx
+	delay1: loop   delay1
+	        ret
+Delay endp
+code ends
+END	main
